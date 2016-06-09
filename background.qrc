@@ -1,13 +1,22 @@
 <RCC>
-  <qresource prefix="Icons">
-    <file>Icons/find.png</file>
+  <qresource prefix="background">
+    <file>Icons/background.jpg</file>
+  </qresource>
+  <qresource prefix="icon">
+    <file>Icons/running_man.png</file>
+    <file>Icons/2fUZnI4.png</file>
+    <file>Icons/45420.png</file>
     <file>Icons/connect.png</file>
+    <file>Icons/connect-icon.png</file>
     <file>Icons/disconnect.png</file>
+    <file>Icons/find.png</file>
+    <file>Icons/MB_0008_phone.png</file>
     <file>Icons/New.png</file>
     <file>Icons/open.png</file>
     <file>Icons/save.png</file>
-  </qresource>
-  <qresource prefix="Background">
-    <file>Icons/background.jpg</file>
+    <file>Icons/setting.png</file>
+    <file>Icons/Telegram (1).png</file>
+    <file>Icons/unnamed (1).png</file>
+    <file>Icons/unnamed.png</file>
   </qresource>
 </RCC>
