@@ -1,7 +1,7 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 
-import GSMUtility_New, sys
+import GSMUtility, sys
 import sys
 import linecache
 import serial
@@ -55,7 +55,7 @@ except AttributeError:
         return s
 
 
-class MainGUIClass(QtGui.QMainWindow, GSMUtility_New.Ui_MainWindow):
+class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainGUIClass, self).__init__(parent)
         self.setupUi(self)
