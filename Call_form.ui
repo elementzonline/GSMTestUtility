@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>329</width>
+    <height>147</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Elementz_GSM_Utility</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="background.qrc">
+    <normaloff>:/background/Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg</normaloff>:/background/Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{background-image: url(:/background/Icons/background.jpg);background-repeat: repeat;}
+
+QToolBar{background:blue;}
+
+QWidget#scrollArea{background-color: blue;}
+QTabBar::tab { background: darkblue; color: white; padding: 10px; border: 2px solid blue;}
+QTabBar::tab:selected {background: rgb(217, 217, 0);  color: black; }
+QTabBar::tab:!selected {background:darkblue;  color: white;}
+/*QTabBar {background-color: blue;} */
+QTabBar::tab:hover{color:#ccc;	background-color: qlineargradient(spread:pad, x1:0.517, y1:0, x2:0.517, y2:1, stop:0 rgba(45, 45, 45, 255), stop:0.505682 rgba(45, 45, 45, 255), stop:1 rgba(29, 29, 29, 255));	border-color:#2d89ef;border-width:2px;}
+
+QPushButton{border-style:solid;background-color:darkblue;color:white;border-radius:3px;font: 12pt &quot;MS Shell Dlg 2&quot;;}
+QPushButton:hover{color:#ccc;	background-color: qlineargradient(spread:pad, x1:0.517, y1:0, x2:0.517, y2:1, stop:0 rgba(45, 45, 45, 255), stop:0.505682 rgba(45, 45, 45, 255), stop:1 rgba(29, 29, 29, 255));	border-color:#2d89ef;border-width:2px;}
+QPushButton:pressed{background-color: lightblue;}
+QPushButton:disabled{background-color: rgb(176, 176, 176);}
+
+QPushButton#connectButton{ background-color: darkred;}
+QPushButton#connectButton:hover{color:#ccc;	background-color: qlineargradient(spread:pad, x1:0.517, y1:0, x2:0.517, y2:1, stop:0 rgba(45, 45, 45, 255), stop:0.505682 rgba(45, 45, 45, 255), stop:1 rgba(29, 29, 29, 255));	border-color:#2d89ef;border-width:2px;}
+QPushButton#connectButton:pressed{background-color: lightblue;}
+QPushButton#connectButton:disabled{background-color: rgb(176, 176, 176);}
+
+QComboBox{border-style:solid;background-color:darkblue;color:white;border-radius:3px;font: 12pt &quot;MS Shell Dlg 2&quot;; padding: 10px}
+QComboBox:hover{color:#ccc;	background-color: qlineargradient(spread:pad, x1:0.517, y1:0, x2:0.517, y2:1, stop:0 rgba(45, 45, 45, 255), stop:0.505682 rgba(45, 45, 45, 255), stop:1 rgba(29, 29, 29, 255));	border-color:#2d89ef;border-width:2px;}
+QComboBox:pressed{background-color: lightblue;}
+
+QLineEdit {border:4px outset; border-radius: 8px; border-color: blue; color:rgb(0, 0, 0);  background-color: rgb(235, 235, 235); padding:10px;font: 75 12pt &quot;MS Shell Dlg 2&quot;;}
+/*QLineEdit { border-radius: 8px;  color:black;background-color: white; } */
+QLineEdit:focus {  border:4px outset; border-radius: 8px; border-color: rgb(41, 237, 215); color:rgb(0, 0, 0);  background-color: rgb(240, 204, 204); }
+
+QLabel {border:4px outset; border-radius: 0px; border-color: blue; color:white;  background-color: darkblue; padding:5px;font: 75 12pt &quot;MS Shell Dlg 2&quot;;}
+QPlainTextEdit {border:4px outset; border-radius: 0px; border-color: blue; color:black;  background-color: rgb(235, 235, 235);; padding:5px;font: 75 12pt &quot;MS Shell Dlg 2&quot;;}</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>131</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(0, 85, 0);</string>
+        </property>
+        <property name="text">
+         <string>Accept</string>
+        </property>
+        <property name="icon">
+         <iconset resource="background.qrc">
+          <normaloff>:/icon/Icons/MB_0008_phone.png</normaloff>:/icon/Icons/MB_0008_phone.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>0</y>
+          <width>131</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(170, 0, 0);</string>
+        </property>
+        <property name="text">
+         <string>Decline</string>
+        </property>
+        <property name="icon">
+         <iconset resource="background.qrc">
+          <normaloff>:/icon/Icons/2fUZnI4.png</normaloff>:/icon/Icons/2fUZnI4.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QFrame" name="frame_2">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>10</y>
+          <width>71</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgba(255, 255, 255, 0);
+border-color: rgba(255, 255, 255, 0);</string>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; color:#ff0000;&quot;&gt;Calling....&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="numberLineedit">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>9</y>
+          <width>241</width>
+          <height>51</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="background.qrc"/>
+ </resources>
+ <connections/>
+</ui>

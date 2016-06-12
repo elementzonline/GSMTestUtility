@@ -1,7 +1,8 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 
-import GSMUtility, sys
+import GSMUtility_New, sys
+import Call_form, sys
 import sys
 import linecache
 import serial
@@ -27,12 +28,14 @@ port_no = ''
 tcp_data = ''
 source_address = ''
 get_post = ''
-tu_veriable=''
-ftp_server_name=''
-user_name=''
-ftp_password=''
-ftp_file_name=''
-ftp_directry=''
+tu_veriable = ''
+ftp_server_name = ''
+user_name = ''
+ftp_password = ''
+ftp_file_name = ''
+ftp_directry = ''
+incoming_call = False
+app2 = ''
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -55,7 +58,64 @@ except AttributeError:
         return s
 
 
-class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
+class DialogClass(QtGui.QDialog, Call_form.Ui_Dialog):
+    def __init__(self, parent=None):
+        super(DialogClass, self).__init__(parent)
+        self.setupUi(self)
+        # self.Thread2 = DialogThread()
+        # self.Thread1 = DialogClass()
+        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.Attend_Call)
+        QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL(_fromUtf8("clicked()")), self.Decline)
+        # QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.Delete_Dialog)
+
+    def Attend_Call(self):
+        GSM_port.write('ATA' + "\r\n")
+
+    def Decline(self):
+        global Console_Data
+        global c
+        global incoming_call
+        GSM_port.write('ATH' + "\r\n")
+        self.close()
+
+
+        # def Delete_Dialog(self):
+        #     global Console_Data
+        #     global c
+        #     print 'abc'
+        #     if c!=0 :
+        #
+        #       if Console_Data[c+31:c+41]=='NO CARRIER':
+        #          self.close()
+
+    #
+    # class DialogThread(QtCore.QThread):
+    #        def __init__(self):
+    #          QtCore.QThread.__init__(self)
+    #
+    #        def __del__(self):
+    #          self.wait()
+    #
+    #        def run(self):
+    #          self.emit(QtCore.SIGNAL("SADHU_BABA"))
+    # def Delete_Dialog(self):
+    #     global Console_Data
+    #     global c
+    #     print Console_Data[c+29:c+32]
+    # print Console_Data[c+31:c+41]
+    # if Console_Data[c+31:c+41]=='NO CARRIER' or Console_Data[c+29:c+32]=='ADH':
+    #    incoming_call=False
+    # btn = QtGui.QPushButton('Yes', self)
+    # btn.clicked.connect(self.close)
+    # print "trigger signal received"
+    # def run(self):
+    #      global c
+    #      global Console_Data
+    # #     print c
+    #      self.numberLineedit.setText(str(Console_Data[c:c+13]))
+
+
+class MainGUIClass(QtGui.QMainWindow, GSMUtility_New.Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainGUIClass, self).__init__(parent)
         self.setupUi(self)
@@ -65,17 +125,18 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         QtCore.QObject.connect(self.baudcomboBox, QtCore.SIGNAL(_fromUtf8("activated(QString)")), self.baud_select)
         QtCore.QObject.connect(self.connectButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.connect_disconnect)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.serial_data)
-        QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.showno)
+        QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.Delete_Dialog)
+        # QtCore.QObject.connect(self.plainTextEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.Count_no)
+        # QtCore.QObject.connect(self.plainTextEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.Count_no)
+        QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("INCOMING_CALL")), self.showno)
         QtCore.QObject.connect(self.SendButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.send_script)
         QtCore.QObject.connect(self.ScriptLineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.ScriptText)
         QtCore.QObject.connect(self.Call_Button, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CallText)
         QtCore.QObject.connect(self.NumberlineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.callno)
         QtCore.QObject.connect(self.Halt_Button, QtCore.SIGNAL(_fromUtf8("clicked()")), self.end_call)
         QtCore.QObject.connect(self.lineEdit_3, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.smsno)
-        QtCore.QObject.connect(self.plainTextEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.smsbody)
+        QtCore.QObject.connect(self.lineEdit_12, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.smsbody)
         QtCore.QObject.connect(self.pushButton_4, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sendfunc)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.accept_call)
-        QtCore.QObject.connect(self.pushButton_2, QtCore.SIGNAL(_fromUtf8("clicked()")), self.decline)
         QtCore.QObject.connect(self.lineEdit_2, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.get_apn)
         QtCore.QObject.connect(self.lineEdit_4, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.get_ip)
         QtCore.QObject.connect(self.lineEdit_5, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.get_port)
@@ -101,6 +162,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         QtCore.QObject.connect(self.pushButton_10, QtCore.SIGNAL(_fromUtf8("clicked()")), self.ftp_get)
         QtCore.QObject.connect(self.pushButton_11, QtCore.SIGNAL(_fromUtf8("clicked()")), self.ftp_connect)
         QtCore.QObject.connect(self.pushButton_12, QtCore.SIGNAL(_fromUtf8("clicked()")), self.ftp_disconnect)
+
     def port_update(self):
         try:
             self.portComboBox.clear()
@@ -112,7 +174,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
                 self.portComboBox.setItemText(i, ports[i][0])
             self.port_select(ports[0][0])
         except:
-             self.SerialConsole.setPlainText('Port Not Found')
+            self.SerialConsole.setPlainText('Port Not Found')
 
     def port_select(self, port):
         GSM_port.close
@@ -125,7 +187,6 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         global portOpen
         portOpen = False
         GSM_port.baudrate = baud
-
 
     def connect_disconnect(self):
         global Console_Data
@@ -150,8 +211,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
                 # self.SerialConsole.setPlainText('Port Opened')
 
         except:
-             self.SerialConsole.setPlainText('Port May be Used By Another Application')
-
+            self.SerialConsole.setPlainText('Port May be Used By Another Application')
 
     def serial_data(self):
         global Console_Data
@@ -160,34 +220,35 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
     def ScriptText(self, data):
         global ScriptData
         ScriptData = data
-
+        print 'a'
+        
     def send_script(self):
         global ScriptData
         GSM_port.write(str(ScriptData) + "\r\n")
 
     def callno(self, data):
+
         global number
         number = data
 
     def CallText(self):
-          global number
-          GSM_port.write('ATD' + str(number) + ';' + "\r\n")
-
-
-
+        global number
+        GSM_port.write('ATD' + str(number) + ';' + "\r\n")
 
     def end_call(self):
         GSM_port.write('ATH' + "\r\n")
-
 
     def smsno(self, data1):
         global smsnum
         smsnum = data1
 
     def smsbody(self, sms_data):
-
         global sms_body
         sms_body = sms_data
+        count=len(sms_body)
+        self.lineEdit.setText(str(count))
+        # count = self.smstextEdit.toPlainText().length();
+        # self.lineEdit.setText(str(count))
 
     def sendfunc(self):
 
@@ -195,189 +256,208 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         global smsnum
         GSM_port.write('AT+CMGS="' + str(smsnum) + '"' + chr(13))
         time.sleep(2)
-        GSM_port.write(str(self.plainTextEdit.toPlainText()) + chr(26))
+        GSM_port.write(str(sms_body) + chr(26))
 
-    def accept_call(self):
-        GSM_port.write('ATA' + chr(13))
+    # def accept_call(self):
+    #     GSM_port.write('ATA' + chr(13))
 
-    def decline(self):
-        GSM_port.write('ATH' + chr(13))
+    # def decline(self):
+    #     GSM_port.write('ATH' + chr(13))
 
     def showno(self):
-      global c
-      global Console_Data
-      if c!=0 :
-        self.lineEdit.setText(str(Console_Data[c:c+13]))
-        if Console_Data[c+31:c+41]=='NO CARRIER' or Console_Data[c+29:c+32]=='ADH':
-             self.lineEdit.setText('')
+        global c
+        global Console_Data
+        global incoming_call
+        global app2
+        if c != 0:
 
-    def get_apn(self,data2):
+            local_var = ''
+            local_var += Console_Data[c + 1:c + 13]
+
+            if len(local_var) == 10:
+                app2 = DialogClass()
+                app2.numberLineedit.setText(str(Console_Data[c:c + 13]))
+                incoming_call = True
+                # app2.Thread2.start()
+                # self.emit(QtCore.SIGNAL("INCOMING_CALL"))
+                app2.exec_()
+                #
+                incoming_call = False
+
+    def Delete_Dialog(self):
+        global Console_Data
+        global app2
+        local2 = 0
+        local3 = ''
+        local3 += Console_Data
+        local2 = local3.rfind('NO CARRIER')
+        if local2 >= 0:
+            local3 = ''
+            app2.close()
+
+    def get_apn(self, data2):
         global apn
         apn = data2
 
-    def get_ip(self,data3):
+    def get_ip(self, data3):
         global server_ip
-        server_ip=data3
+        server_ip = data3
 
-    def get_port(self,data4):
+    def get_port(self, data4):
         global port_no
-        port_no=data4
+        port_no = data4
 
+    def connect_gprs(self, data5):
+        global apn
+        global server_ip
+        global port_no
+        global tu_veriable
+        tu_veriable = data5
+        # try:
+        if tu_veriable == 'TCP':
+            Console_Data = 'Please Wait Device is Getting Connected...\n'
+            GSM_port.write('AT+CIPMUX=0' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CSTT=' + '"' + str(apn) + '"' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CIICR' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CIFSR' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CIPSTART="TCP"' + ',''"' + str(server_ip) + '"' + ',''"' + str(port_no) + '"' + chr(13))
 
-    def connect_gprs(self,data5):
-         global apn
-         global server_ip
-         global port_no
-         global tu_veriable
-         tu_veriable=data5
-         # try:
-         if tu_veriable=='TCP':
-             Console_Data='Please Wait Device is Getting Connected...\n'
-             GSM_port.write('AT+CIPMUX=0'+ chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CSTT='+'"'+str(apn)+'"' + chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CIICR'+ chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CIFSR'+ chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CIPSTART="TCP"'+',''"'+str(server_ip)+'"'+',''"'+str(port_no)+'"'+chr(13))
+        elif tu_veriable == 'UDP':
+            Console_Data = 'Please Wait Device is Getting Connected...\n'
+            GSM_port.write('AT+CGATT?' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CSTT=' + '"' + str(apn) + '"' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CIICR' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CIFSR' + chr(13))
+            time.sleep(1)
+            GSM_port.write('AT+CIPSTART="UDP"' + ',''"' + str(server_ip) + '"' + ',''"' + str(port_no) + '"' + chr(13))
 
-         elif tu_veriable=='UDP':
-             Console_Data='Please Wait Device is Getting Connected...\n'
-             GSM_port.write('AT+CGATT?'+ chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CSTT='+'"'+str(apn)+'"' + chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CIICR'+ chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CIFSR'+ chr(13))
-             time.sleep(1)
-             GSM_port.write('AT+CIPSTART="UDP"'+',''"'+str(server_ip)+'"'+',''"'+str(port_no)+'"'+chr(13))
+            # except:
+            #     Console_Data='Please Select either TCP or UDP from the Drop Down Menu'
+            #     self.SerialConsole.setPlainText(Console_Data)
 
-         # except:
-         #     Console_Data='Please Select either TCP or UDP from the Drop Down Menu'
-         #     self.SerialConsole.setPlainText(Console_Data)
-
-
-    def send_data(self,data5):
+    def send_data(self, data5):
         global tcp_data
-        tcp_data=data5
+        tcp_data = data5
 
     def send_button(self):
         global tcp_data
         global tu_veriable
-        GSM_port.write('AT+CIPSEND'+ chr(13))
+        GSM_port.write('AT+CIPSEND' + chr(13))
         time.sleep(1)
         GSM_port.write(str(self.plainTextEdit_7.toPlainText()) + chr(26))
 
-    def source_add(self,data6):
+    def source_add(self, data6):
         global source_address
-        source_address=data6
+        source_address = data6
 
-    def get_data(self,data7):
+    def get_data(self, data7):
         global get_post
-        get_post=data7
+        get_post = data7
 
-    def http_apn(self,data8):
+    def http_apn(self, data8):
         global apn
-        apn=data8
+        apn = data8
 
     def get_fun(self):
         global source_address
         global get_post
         global new_apn
-        GSM_port.write('AT+SAPBR=3,1,"Contype","GPRS"'+chr(13))
+        GSM_port.write('AT+SAPBR=3,1,"Contype","GPRS"' + chr(13))
         # time.sleep(1)
-        GSM_port.write('AT+SAPBR=3,1,"APN",'+'"'+str(new_apn)+'"'+chr(13))
+        GSM_port.write('AT+SAPBR=3,1,"APN",' + '"' + str(new_apn) + '"' + chr(13))
         # time.sleep(1)
-        GSM_port.write('AT+SAPBR=1,1'+chr(13))
+        GSM_port.write('AT+SAPBR=1,1' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+SAPBR=2,1'+chr(13))
+        GSM_port.write('AT+SAPBR=2,1' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+SAPBR=0,1'+chr(13))
+        GSM_port.write('AT+SAPBR=0,1' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPINIT'+chr(13))
+        GSM_port.write('AT+HTTPINIT' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPPARA="CID",1'+chr(13))
+        GSM_port.write('AT+HTTPPARA="CID",1' + chr(13))
         # time.sleep(1)
-        GSM_port.write('AT+HTTPPARA="URL",'+'"'+str(self.plainTextEdit_2.toPlainText())+'"'+chr(13))
+        GSM_port.write('AT+HTTPPARA="URL",' + '"' + str(self.plainTextEdit_2.toPlainText()) + '"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPACTION=0'+chr(13))
+        GSM_port.write('AT+HTTPACTION=0' + chr(13))
         # time.sleep(1)
         # # GSM_port.write('AT+HTTPDATA'+chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPREAD'+chr(13))
+        GSM_port.write('AT+HTTPREAD' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTTERM'+chr(13))
-
+        GSM_port.write('AT+HTTTERM' + chr(13))
 
     def post_fun(self):
 
-        GSM_port.write('AT+HTTPINIT'+chr(13))
+        GSM_port.write('AT+HTTPINIT' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPPARA="CID",1'+chr(13))
+        GSM_port.write('AT+HTTPPARA="CID",1' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPPARA="URL",'+'"'+str(self.plainTextEdit_2.toPlainText())+'"'+chr(13))
+        GSM_port.write('AT+HTTPPARA="URL",' + '"' + str(self.plainTextEdit_2.toPlainText()) + '"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTDATA=100,10000'+chr(13))
+        GSM_port.write('AT+HTTDATA=100,10000' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+HTTPACTION=1'+chr(13))
+        GSM_port.write('AT+HTTPACTION=1' + chr(13))
         time.sleep(1)
 
     def session_close(self):
-        GSM_port.write('AT+HTTPTERM'+chr(13))
-
+        GSM_port.write('AT+HTTPTERM' + chr(13))
 
     def disconnect_gprs(self):
         # global tu_veriable
         # if tu_veriable=='TCP':
-            GSM_port.write('AT+CIPSHUT'+chr(13))
+        GSM_port.write('AT+CIPSHUT' + chr(13))
         # elif tu_veriable=='UDP':
         #     GSM_port.write('AT+CIPCLOSE'+chr(13))
 
-
     def clear_log(self):
         global Console_Data
-        Console_Data=''
+        Console_Data = ''
         self.SerialConsole.setPlainText(Console_Data)
 
-    def tcp_udp(self,local1):
+    def tcp_udp(self, local1):
         global tu_veriable
         global portOpen
-        tu_veriable=local1
+        tu_veriable = local1
 
-        if local1=='TCP':
-           self.pushButton_8.setText("Connect TCP")
-        elif local1=='UDP':
-           self.pushButton_8.setText("Connect UDP")
-        elif local1=='Select':
-            self.pushButton_8.setEnabled(False)
+        if local1 == 'TCP':
+            self.pushButton_8.setText("Connect TCP")
+        elif local1 == 'UDP':
+            self.pushButton_8.setText("Connect UDP")
+        elif local1 == 'Select':
+            var = self.pushButton_8
+            var.setEnabled(False)
             self.pushButton_8.setText("Connect")
 
-    def ftp_server(self,data6):
+    def ftp_server(self, data6):
         global ftp_server_name
-        ftp_server_name=data6
+        ftp_server_name = data6
 
-    def username(self,data7):
+    def username(self, data7):
         global user_name
-        user_name=data7
+        user_name = data7
 
-    def password(self,data8):
+    def password(self, data8):
         global ftp_password
-        ftp_password=data8
+        ftp_password = data8
 
-    def file_name(self,data9):
+    def file_name(self, data9):
         global ftp_file_name
-        ftp_file_name=data9
+        ftp_file_name = data9
 
-    def directry(self,data10):
+    def directry(self, data10):
         global ftp_directry
-        ftp_directry=data10
+        ftp_directry = data10
 
-    def ftp_apn(self,data11):
+    def ftp_apn(self, data11):
         global apn
-        apn=data11
+        apn = data11
 
     def ftp_connect(self):
         global apn
@@ -386,7 +466,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         global ftp_password
         GSM_port.write('AT+SAPBR=3,1,"Contype","GPRS"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+SAPBR=3,1,"APN","'+str(apn)+'"' + chr(13))
+        GSM_port.write('AT+SAPBR=3,1,"APN","' + str(apn) + '"' + chr(13))
         time.sleep(1)
         GSM_port.write('AT+SAPBR =1,1' + chr(13))
         time.sleep(1)
@@ -394,22 +474,22 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         time.sleep(1)
         GSM_port.write('AT+FTPCID=1' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+FTPSERV="'+str(ftp_server_name)+'"' + chr(13))
+        GSM_port.write('AT+FTPSERV="' + str(ftp_server_name) + '"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+FTPUN="'+str(user_name)+'"' + chr(13))
+        GSM_port.write('AT+FTPUN="' + str(user_name) + '"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+FTPPW="'+str(ftp_password)+'"' + chr(13))
+        GSM_port.write('AT+FTPPW="' + str(ftp_password) + '"' + chr(13))
+
     def ftp_disconnect(self):
         GSM_port.write('AT+FTPPUT=2,0' + chr(13))
-
 
     def ftp_push(self):
 
         global ftp_file_name
         global ftp_directry
-        GSM_port.write('AT+FTPPUTNAME="'+str(ftp_file_name)+'"' + chr(13))
+        GSM_port.write('AT+FTPPUTNAME="' + str(ftp_file_name) + '"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+FTPPUTPATH="'+str(ftp_directry)+'"' + chr(13))
+        GSM_port.write('AT+FTPPUTPATH="' + str(ftp_directry) + '"' + chr(13))
         time.sleep(1)
         GSM_port.write('AT+FTPPUT=1' + chr(13))
         time.sleep(1)
@@ -417,20 +497,17 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         time.sleep(1)
         GSM_port.write(str(self.plainTextEdit_4.toPlainText()) + chr(13))
 
-
-
     def ftp_get(self):
         global ftp_file_name
         global ftp_directry
-        GSM_port.write('AT+FTPGETNAME="'+str(ftp_file_name)+'"' + chr(13))
+        GSM_port.write('AT+FTPGETNAME="' + str(ftp_file_name) + '"' + chr(13))
         time.sleep(1)
-        GSM_port.write('AT+FTPGETPATH="'+str(ftp_directry)+'"' + chr(13))
+        GSM_port.write('AT+FTPGETPATH="' + str(ftp_directry) + '"' + chr(13))
         time.sleep(1)
         GSM_port.write('AT+FTPGET=1' + chr(13))
         time.sleep(1)
         GSM_port.write('AT+FTPGET=2,1024' + chr(13))
         time.sleep(1)
-
 
 
 class WorkThread(QtCore.QThread):
@@ -442,20 +519,25 @@ class WorkThread(QtCore.QThread):
 
     def run(self):
         global portOpen
-
+        global incoming_call
         while True:
             while portOpen:
                 global c
                 d = GSM_port.read()
                 global Console_Data
                 Console_Data += d
+                if incoming_call == False:
+                    if ('+CLIP' in Console_Data):
+                        c = Console_Data.rfind('+CLIP:')
 
-                if ('+CLIP' in Console_Data):
-                    c=Console_Data.rfind('+CLIP:')
-                    c+=8
+                        c += 8
+                    self.emit(QtCore.SIGNAL("INCOMING_CALL"))
+                    # if c!=0:
+                    #    print Console_Data[c]
+                    #    if Console_Data[c+31:c+41]=='NO CARRIER':
+                    #         print 'hey babby'
+
                 self.emit(QtCore.SIGNAL("SERIAL_DATA"))
-
-
 
 
 if __name__ == '__main__':
