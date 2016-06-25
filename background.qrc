@@ -2,7 +2,7 @@
   <qresource prefix="background">
     <file>Icons/inbox-icon-46120.png</file>
     <file>Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg</file>
-    <file>Icons/background.jpg</file>
+    <file>Icons/background.png</file>
   </qresource>
   <qresource prefix="icon">
     <file>Icons/upload.png</file>

@@ -21,7 +21,7 @@
     <normaloff>:/background/Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg</normaloff>:/background/Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMainWindow{background-image: url(:/background/Icons/background.jpg);background-repeat: repeat;}
+   <string notr="true">QMainWindow{background-image: url(:/background/Icons/background.png);background-repeat: repeat;}
 
 QToolBar{background:blue;}
 
@@ -195,7 +195,7 @@ QPlainTextEdit {border:4px outset; border-radius: 0px; border-color: blue; color
        <set>Qt::ImhNone</set>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1785,8 +1785,8 @@ QScrollArea &gt; QWidget &gt; QWidget { background: transparent; }</string>
           <widget class="QWidget" name="scrollAreaWidgetContents">
            <property name="geometry">
             <rect>
-             <x>-187</x>
-             <y>-318</y>
+             <x>0</x>
+             <y>0</y>
              <width>590</width>
              <height>637</height>
             </rect>

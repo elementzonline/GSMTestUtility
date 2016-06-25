@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'GSMUtility.ui'
 #
-# Created: Wed Jun 22 12:39:27 2016
-#      by: PyQt4 UI code generator 4.11.3
+# Created: Sun Jun 26 01:25:43 2016
+#      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/background/Icons/AIbEiAIAAABECP2Iptyl4PzmnAEiC3ZjYXJkX3Bob3RvKihiMjczYWVlNWQ1ZWVlNjYyY2U2NzA5YWUwNzgzMjE2MmZkMGYxN2Q5MAFyoVXTDsx0nC3OGfmWE7vsTYpe9Q.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet(_fromUtf8("QMainWindow{background-image: url(:/background/Icons/background.jpg);background-repeat: repeat;}\n"
+        MainWindow.setStyleSheet(_fromUtf8("QMainWindow{background-image: url(:/background/Icons/background.png);background-repeat: repeat;}\n"
 "\n"
 "QToolBar{background:blue;}\n"
 "\n"
@@ -409,7 +409,7 @@ class Ui_MainWindow(object):
         self.pushButton_3.setIcon(icon7)
         self.pushButton_3.setIconSize(QtCore.QSize(32, 32))
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
-        self.gridLayout_12.addWidget(self.pushButton_3, 12, 3, 1, 1, QtCore.Qt.AlignLeft)
+        self.gridLayout_12.addWidget(self.pushButton_3, 12, 3, 1, 1)
         self.pushButton_26 = QtGui.QPushButton(self.scrollAreaWidgetContents_3)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -423,7 +423,7 @@ class Ui_MainWindow(object):
         self.pushButton_26.setIcon(icon8)
         self.pushButton_26.setIconSize(QtCore.QSize(24, 24))
         self.pushButton_26.setObjectName(_fromUtf8("pushButton_26"))
-        self.gridLayout_12.addWidget(self.pushButton_26, 2, 4, 1, 1, QtCore.Qt.AlignRight)
+        self.gridLayout_12.addWidget(self.pushButton_26, 2, 4, 1, 1)
         spacerItem31 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.gridLayout_12.addItem(spacerItem31, 13, 4, 1, 1)
         self.plainTextEdit_3 = QtGui.QPlainTextEdit(self.scrollAreaWidgetContents_3)
@@ -459,7 +459,7 @@ class Ui_MainWindow(object):
         self.pushButton_5.setIcon(icon9)
         self.pushButton_5.setIconSize(QtCore.QSize(32, 32))
         self.pushButton_5.setObjectName(_fromUtf8("pushButton_5"))
-        self.gridLayout_12.addWidget(self.pushButton_5, 12, 4, 1, 1, QtCore.Qt.AlignRight)
+        self.gridLayout_12.addWidget(self.pushButton_5, 12, 4, 1, 1)
         spacerItem34 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.gridLayout_12.addItem(spacerItem34, 3, 4, 1, 1)
         self.plainTextEdit_2 = QtGui.QPlainTextEdit(self.scrollAreaWidgetContents_3)
@@ -636,7 +636,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(-187, -318, 590, 637))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 590, 637))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_8 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_8.setObjectName(_fromUtf8("gridLayout_8"))
@@ -710,7 +710,7 @@ class Ui_MainWindow(object):
         self.pushButton_9.setIcon(icon9)
         self.pushButton_9.setIconSize(QtCore.QSize(32, 32))
         self.pushButton_9.setObjectName(_fromUtf8("pushButton_9"))
-        self.gridLayout_8.addWidget(self.pushButton_9, 13, 1, 1, 1, QtCore.Qt.AlignRight)
+        self.gridLayout_8.addWidget(self.pushButton_9, 13, 1, 1, 1)
         spacerItem42 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.gridLayout_8.addItem(spacerItem42, 4, 2, 1, 1)
         spacerItem43 = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
@@ -744,7 +744,7 @@ class Ui_MainWindow(object):
         self.gridLayout_6.addWidget(self.pushButton_11, 0, 0, 2, 1)
         spacerItem45 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.gridLayout_6.addItem(spacerItem45, 0, 1, 1, 1)
-        self.gridLayout_8.addWidget(self.widget, 7, 1, 1, 1, QtCore.Qt.AlignTop)
+        self.gridLayout_8.addWidget(self.widget, 7, 1, 1, 1)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout_7.addWidget(self.scrollArea, 0, 0, 1, 1)
         self.tabWidget.addTab(self.FTP, _fromUtf8(""))
@@ -765,7 +765,7 @@ class Ui_MainWindow(object):
         self.actionOpen.setObjectName(_fromUtf8("actionOpen"))
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
