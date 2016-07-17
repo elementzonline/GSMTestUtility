@@ -10,6 +10,8 @@ import serial.tools.list_ports
 import time
 import StringIO
 
+
+com_port_selection = ''
 send_flag = 0
 baud_rate = 9600
 com_port = None
@@ -35,8 +37,11 @@ ftp_password = ''
 ftp_file_name = ''
 ftp_directry = ''
 incoming_call = False
-app2 = ''
+count2=''
 ftp_put_data=''
+count3=''
+count4=''
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -88,6 +93,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.serial_data)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.Delete_Dialog)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("INCOMING_CALL")), self.showno)
+        QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.print_http_get)
         QtCore.QObject.connect(self.Thread1, QtCore.SIGNAL(_fromUtf8("SERIAL_DATA")), self.on_off)
         QtCore.QObject.connect(self.SendButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.send_script)
         QtCore.QObject.connect(self.ScriptLineEdit, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.ScriptText)
@@ -96,6 +102,11 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         QtCore.QObject.connect(self.Halt_Button, QtCore.SIGNAL(_fromUtf8("clicked()")), self.end_call)
         QtCore.QObject.connect(self.lineEdit_3, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.smsno)
         QtCore.QObject.connect(self.plainTextEdit, QtCore.SIGNAL(_fromUtf8("textChanged()")), self.smsbody)
+        QtCore.QObject.connect(self.plainTextEdit_7, QtCore.SIGNAL(_fromUtf8("textChanged()")), self.smsbody_second)
+        QtCore.QObject.connect(self.plainTextEdit_3, QtCore.SIGNAL(_fromUtf8("textChanged()")), self.http_smsbody_second)
+        QtCore.QObject.connect(self.plainTextEdit_4, QtCore.SIGNAL(_fromUtf8("textChanged()")), self.ftp_smsbody_third)
+
+
         QtCore.QObject.connect(self.pushButton_4, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sendfunc)
         QtCore.QObject.connect(self.lineEdit_2, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.get_apn)
         QtCore.QObject.connect(self.lineEdit_4, QtCore.SIGNAL(_fromUtf8("textChanged(QString)")), self.get_ip)
@@ -128,21 +139,25 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
     def port_update(self):
         try:
             self.portComboBox.clear()
+            initial = 'Select'
             ports = list(serial.tools.list_ports.comports())
+            ports = [initial] + ports
             num_port = len(ports)
             for i in range(num_port):
                 self.portComboBox.addItem("")
-                # for i in range(num_port):
-                self.portComboBox.setItemText(i, ports[i][0])
-            self.port_select(ports[0][0])
+                if i == 0:
+                    self.portComboBox.setItemText(i, ports[i])
+                else:
+                    self.portComboBox.setItemText(i, ports[i][0])
         except:
             self.SerialConsole.setPlainText('Port Not Found')
 
-    def port_select(self, port):
+    def port_select(self, local_var):
+        global com_port_selection
         GSM_port.close
         global portOpen
         portOpen = False
-        GSM_port.port = port
+        com_port_selection = local_var
 
     def baud_select(self, baud):
         GSM_port.close
@@ -151,9 +166,9 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         GSM_port.baudrate = baud
 
     def connect_disconnect(self):
-        global Console_Data
+          global Console_Data
 
-        try:
+          try:
 
             global portOpen
             if (portOpen):
@@ -163,20 +178,28 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
                 self.connectButton.setText("Connect")
                 Console_Data = 'Port Closed'
                 self.SerialConsole.setPlainText('Port Closed')
+                self.findButton.setEnabled(True)
+                self.portComboBox.setEnabled(True)
             else:
-
+                GSM_port.port = str(com_port_selection)
+                GSM_port.open()
                 GSM_port.open()
                 portOpen = True
                 self.connectButton.setText("Disconnect")
                 Console_Data = 'Port Opened'
                 GSM_port.write('AT' + "\r\n")
-                # self.SerialConsole.setPlainText('Port Opened')
+                self.findButton.setEnabled(False)
+                self.portComboBox.setEnabled(False)
 
-        except:
-            self.SerialConsole.setPlainText('Port May be Used By Another Application')
+
+          except:
+             self.SerialConsole.setPlainText('Port May be Used By Another Application')
 
     def serial_data(self):
         global Console_Data
+        global read_data
+        with open('temp.txt', 'w') as FileHandle:
+            FileHandle.write(read_data)
         self.SerialConsole.setPlainText(Console_Data)
         self.SerialConsole.verticalScrollBar().setSliderPosition(self.SerialConsole.verticalScrollBar().maximum());
 
@@ -234,6 +257,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         count=len(self.plainTextEdit.toPlainText())
         self.lineEdit.setText(str(count))
 
+
     def sendfunc(self):
 
         global smsnum
@@ -248,12 +272,12 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         global c
         global Console_Data
         global incoming_call
-        global app2
+
         if c != 0:
             local_var = ''
             local_var += Console_Data[c + 1:c + 13]
             if len(local_var) == 10:
-                app2 = DialogClass()
+
                 app2.numberLineedit.setText(str(Console_Data[c:c + 13]))
                 incoming_call = True
                 app2.exec_()
@@ -262,7 +286,7 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
     def Delete_Dialog(self):
         # global Console_Data
         global read_data
-        global app2
+
         local2 = 0
         local2 = read_data.rfind('NO CARRIER')
         if local2 >=0:
@@ -368,11 +392,21 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
         global tcp_data
         tcp_data = data5
 
+    def smsbody_second(self):
+        global count2
+        count2 = len(self.plainTextEdit_7.toPlainText())
+
+
+    def http_smsbody_second(self):
+        global count3
+        count3 = len(self.plainTextEdit_3.toPlainText())
+
     def send_button(self):
         global tcp_data
         global tu_veriable
+        global count2
         try:
-          GSM_port.write('AT+CIPSEND' + chr(13))
+          GSM_port.write('AT+CIPSEND='+str(count2) + chr(13))
           time.sleep(1)
           GSM_port.write(str(self.plainTextEdit_7.toPlainText()) + chr(26))
         except:
@@ -411,48 +445,80 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
 
 
     def get_fun(self):
+        global read_data
+
         global source_address
         global get_post
         global apn
         try:
               GSM_port.write('AT+SAPBR=3,1,"Contype","GPRS"' + chr(13))
-              # time.sleep(1)
+              time.sleep(1)
               GSM_port.write('AT+SAPBR=3,1,"APN",' + '"' + str(apn) + '"' + chr(13))
-              # time.sleep(1)
+              time.sleep(1)
               GSM_port.write('AT+SAPBR=1,1' + chr(13))
               time.sleep(1)
               GSM_port.write('AT+SAPBR=2,1' + chr(13))
               time.sleep(1)
-              GSM_port.write('AT+SAPBR=0,1' + chr(13))
-              time.sleep(1)
               GSM_port.write('AT+HTTPINIT' + chr(13))
               time.sleep(1)
               GSM_port.write('AT+HTTPPARA="CID",1' + chr(13))
-              # time.sleep(1)
+              time.sleep(1)
               GSM_port.write('AT+HTTPPARA="URL",' + '"' + str(self.plainTextEdit_2.toPlainText()) + '"' + chr(13))
               time.sleep(1)
               GSM_port.write('AT+HTTPACTION=0' + chr(13))
-              # time.sleep(1)
-              # # GSM_port.write('AT+HTTPDATA'+chr(13))
-              time.sleep(1)
+              time.sleep(10)
               GSM_port.write('AT+HTTPREAD' + chr(13))
-              # time.sleep(1)
-              # GSM_port.write('AT+HTTTERM' + chr(13))
+
+
         except:
             self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1)Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
+    def print_http_get(self):
+        global read_data
+        x1 = 0
+        x2=0
+        x3 = 0
+        x1 = read_data.rfind('OK')
+        x2= read_data.rfind('+HTTPREAD:')
+        with open('temp.txt', 'w') as FileHandle:
+            FileHandle.write(read_data)
+        with open("temp.txt", "r") as f:
+            for line in f:
+                if line.startswith('+HTTPREAD:'):
+                    x3 = line.split(':')
+                    x4=len(str(x3[1]))
+                    if x1>0 and x2>0 and x1>x2:
+
+                       self.plainTextEdit_3.setPlainText(str(read_data[x2 +10+x4:x1-1]).replace('<br/>','\n'))
+                       x1=0
+                       x2=0
+                       read_data = ''
+
+
     def post_fun(self):
+
        try:
+          global count3
+          GSM_port.write('AT+SAPBR=3,1,"Contype","GPRS"' + chr(13))
+          time.sleep(1)
+          GSM_port.write('AT+SAPBR=3,1,"APN",' + '"' + str(apn) + '"' + chr(13))
+          time.sleep(1)
+          GSM_port.write('AT+SAPBR=1,1' + chr(13))
+          time.sleep(1)
+          GSM_port.write('AT+SAPBR=2,1' + chr(13))
+          time.sleep(1)
           GSM_port.write('AT+HTTPINIT' + chr(13))
           time.sleep(1)
           GSM_port.write('AT+HTTPPARA="CID",1' + chr(13))
           time.sleep(1)
-          GSM_port.write('AT+HTTPPARA="URL",' + '"' + str(self.plainTextEdit_2.toPlainText()) + '"' + chr(13))
+          GSM_port.write('AT+HTTPPARA="URL",' +'"'+str(self.plainTextEdit_2.toPlainText())+'"' + chr(13))
           time.sleep(1)
-          GSM_port.write('AT+HTTDATA=100,10000' + chr(13))
+          GSM_port.write('AT+HTTPPARA="CONTENT",' + '"'+str(self.plainTextEdit_3.toPlainText())+'"' + chr(13))
+          time.sleep(1)
+          GSM_port.write('AT+HTTPDATA='+str(count3)+',10000' + chr(13))
           time.sleep(1)
           GSM_port.write('AT+HTTPACTION=1' + chr(13))
-          time.sleep(1)
+          time.sleep(10)
        except:
            self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1)Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
@@ -614,6 +680,12 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
               self.pushButton_9.setEnabled(False)
          else:
               self.pushButton_9.setEnabled(True)
+
+    def ftp_smsbody_third(self):
+        global count4
+        count4 = len(self.plainTextEdit_4.toPlainText())
+
+
     def ftp_connect(self):
         global apn
         global ftp_server_name
@@ -657,10 +729,12 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
               GSM_port.write('AT+FTPPUTPATH="' + str(ftp_directry) + '"' + chr(13))
               time.sleep(1)
               GSM_port.write('AT+FTPPUT=1' + chr(13))
-              time.sleep(1)
-              GSM_port.write('AT+FTPPUT=2,10' + chr(13))
+              time.sleep(10)
+              GSM_port.write('AT+FTPPUT=2,'+str(count4) + chr(13))
               time.sleep(1)
               GSM_port.write(str(self.plainTextEdit_4.toPlainText()) + chr(13))
+              time.sleep(10)
+              GSM_port.write('AT+FTPPUT=2,0' + chr(13))
         except:
              self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
@@ -674,9 +748,9 @@ class MainGUIClass(QtGui.QMainWindow, GSMUtility.Ui_MainWindow):
              GSM_port.write('AT+FTPGETPATH="' + str(ftp_directry) + '"' + chr(13))
              time.sleep(1)
              GSM_port.write('AT+FTPGET=1' + chr(13))
-             time.sleep(1)
+             time.sleep(10)
              GSM_port.write('AT+FTPGET=2,1024' + chr(13))
-             time.sleep(1)
+
         except:
              self.SerialConsole.setPlainText('Please Connect The Hardware.\n 1) Findport->select port.\n 2)select baud rate according to ur hardware->Connect')
 
@@ -770,5 +844,6 @@ if __name__ == '__main__':
     a = QtGui.QApplication(sys.argv)
     app = MainGUIClass()
     app.show()
+    app2 = DialogClass()
     app.Thread1.start()
     sys.exit(a.exec_())

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'GSMUtility.ui'
 #
-# Created: Sun Jun 26 01:25:43 2016
+# Created: Sun Jul 17 10:52:10 2016
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
